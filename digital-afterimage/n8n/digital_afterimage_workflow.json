@@ -1,0 +1,141 @@
+{
+  "name": "Digital Afterimage - Automated Risk Mitigation & Remediation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "digital-afterimage",
+        "responseMode": "onReceived"
+      },
+      "name": "Webhook Receiver",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"action\"]}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Validate Event Telemetry",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "=http://127.0.0.1:8000/api/assets/{{$json[\"asset_id\"]}}/risk",
+        "options": {}
+      },
+      "name": "Query Risk Engine API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json[\"score\"]}}",
+              "operation": "largerEqual",
+              "value2": 80
+            }
+          ]
+        }
+      },
+      "name": "Check Critical Risk Threshold",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=http://127.0.0.1:8000/api/incidents/INC-0001/remediate",
+        "options": {}
+      },
+      "name": "Trigger Automated Remediation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=http://127.0.0.1:8000/api/incidents/INC-0001/verify",
+        "options": {}
+      },
+      "name": "Run Remediation Verification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1340, 200]
+    }
+  ],
+  "connections": {
+    "Webhook Receiver": {
+      "main": [
+        [
+          {
+            "node": "Validate Event Telemetry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Event Telemetry": {
+      "main": [
+        [
+          {
+            "node": "Query Risk Engine API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Risk Engine API": {
+      "main": [
+        [
+          {
+            "node": "Check Critical Risk Threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Critical Risk Threshold": {
+      "main": [
+        [
+          {
+            "node": "Trigger Automated Remediation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Automated Remediation": {
+      "main": [
+        [
+          {
+            "node": "Run Remediation Verification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {}
+}

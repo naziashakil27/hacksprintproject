@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #F7F1EA;
+  --surface: #FFF9F4;
+  --surface-soft: #F1E6DC;
+  --border: #D8C9BC;
+  --border-soft: #E6D9CD;
+  --text: #342C28;
+  --text-muted: #81746B;
+  --accent: #B86F62;
+  --accent-soft: #E8C8BE;
+  --warning: #C28A58;
+  --danger: #A9564F;
+  --success: #788B72;
+  --dark: #443A35;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(232, 200, 190, 0.25) 0%, transparent 70%),
+      linear-gradient(to right, rgba(216, 201, 188, 0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(216, 201, 188, 0.15) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+}
+
+/* Custom warm scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* React Flow custom warm styling */
+.react-flow__renderer {
+  background: transparent !important;
+}
+.react-flow__attribution {
+  display: none !important;
+}
+.react-flow__node {
+  border-radius: 10px;
+}
+.react-flow__edge-path {
+  stroke-width: 2px !important;
+}
+
+/* Editorial subtle highlights */
+.editorial-quote {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.mono-meta {
+  font-family: 'JetBrains Mono', monospace;
+}
